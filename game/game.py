@@ -2,11 +2,13 @@ import pygame
 
 pygame.init()
 
+JonasImg = pygame.image.load('game/assets/Jonas.png')
+
 CHRCOLOR = (255, 160, 220)
 WIDTH = 1280
 HEIGHT = 720
 GRAVITY = 15
-ACELETION = 5
+ACELERATION = 5
 DESACELERATION = 1
 JUMPHEIGHT = 15
 
@@ -22,10 +24,12 @@ class player(object):
         self.height = height
         self.hSpeed = 0
         self.vSpeed = GRAVITY
+        self.hitbox = (self.x + 16, self.y + 4, 32, 54)
 
 def redrawWindow():
-    screen.fill("white")
-    pygame.draw.rect(screen, CHRCOLOR, (Jonas.x, Jonas.y, Jonas.width, Jonas.height))
+    screen.fill("grey")
+    screen.blit(JonasImg, (Jonas.x, Jonas.y))
+    pygame.draw.rect(screen, "red", Jonas.hitbox, 2)
     pygame.display.update()
     clock.tick(60)
 
@@ -50,13 +54,13 @@ while rodando:
     keys = pygame.key.get_pressed()
 
     if keys[pygame.K_RIGHT]:#Movement
-        Jonas.hSpeed = ACELETION
+        Jonas.hSpeed = ACELERATION
     if keys[pygame.K_LEFT]:
-        Jonas.hSpeed = -ACELETION
+        Jonas.hSpeed = -ACELERATION
     if keys[pygame.K_UP] and Jonas.y == HEIGHT - Jonas.height:
         Jonas.vSpeed = -JUMPHEIGHT
     if keys[pygame.K_DOWN]:
-        Jonas.vSpeed += ACELETION
+        Jonas.vSpeed += ACELERATION
     
     if Jonas.hSpeed > 0:#Gravidade
         if Jonas.x + Jonas.hSpeed + Jonas.width >= WIDTH:
