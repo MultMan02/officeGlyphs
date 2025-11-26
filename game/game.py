@@ -4,6 +4,9 @@ pygame.init()
 
 JonasImg = pygame.image.load('game/assets/Jonas.png')
 background = pygame.image.load('game/assets/Background.png')
+jumpSound = pygame.mixer.Sound('game/assets/Jump.wav')
+Song = pygame.mixer.music.load('game/assets/Song.mp3')
+pygame.mixer.music.play(-1)
 
 CHRCOLOR = (255, 160, 220)
 WIDTH = 1280
@@ -13,6 +16,7 @@ ACELERATION = 5
 DESACELERATION = 1
 jumpheight = 15
 highJump = False
+onAir = False
 cooldown = 0
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -63,8 +67,10 @@ while rodando:
         Jonas.hSpeed = ACELERATION
     if keys[pygame.K_LEFT]:
         Jonas.hSpeed = -ACELERATION
-    if keys[pygame.K_UP] and Jonas.y == HEIGHT - Jonas.height:
+    if keys[pygame.K_UP] and Jonas.y == HEIGHT - Jonas.height and onAir == False:
         Jonas.vSpeed = -jumpheight
+        jumpSound.play()
+        onAir = True
     if keys[pygame.K_DOWN]:
         Jonas.vSpeed += ACELERATION
     if keys[pygame.K_j] and cooldown == 0:
@@ -74,6 +80,10 @@ while rodando:
             highJump = True
         cooldown = 1
     
+    if onAir and Jonas.y <= HEIGHT - Jonas.height - 1:
+        onAir = False
+
+
     if cooldown >= 1:
         cooldown += 1
     if cooldown >= 30:
