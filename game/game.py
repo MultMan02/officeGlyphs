@@ -3,6 +3,7 @@ import pygame
 pygame.init()
 
 JonasImg = pygame.image.load('game/assets/Jonas.png')
+background = pygame.image.load('game/assets/Background.png')
 
 CHRCOLOR = (255, 160, 220)
 WIDTH = 1280
@@ -10,7 +11,9 @@ HEIGHT = 720
 GRAVITY = 15
 ACELERATION = 5
 DESACELERATION = 1
-JUMPHEIGHT = 15
+jumpheight = 15
+highJump = False
+cooldown = 0
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 clock = pygame.time.Clock()
@@ -27,9 +30,12 @@ class player(object):
         self.hitbox = (self.x + 16, self.y + 4, 32, 54)
 
 def redrawWindow():
-    screen.fill("grey")
+    screen.blit(background, (0, 0))
     screen.blit(JonasImg, (Jonas.x, Jonas.y))
-    pygame.draw.rect(screen, "red", Jonas.hitbox, 2)
+    if highJump:
+        pygame.draw.rect(screen, "green", (0, 0, 20, 20))
+    else:
+        pygame.draw.rect(screen, "red", (0, 0, 20, 20))
     pygame.display.update()
     clock.tick(60)
 
@@ -58,9 +64,25 @@ while rodando:
     if keys[pygame.K_LEFT]:
         Jonas.hSpeed = -ACELERATION
     if keys[pygame.K_UP] and Jonas.y == HEIGHT - Jonas.height:
-        Jonas.vSpeed = -JUMPHEIGHT
+        Jonas.vSpeed = -jumpheight
     if keys[pygame.K_DOWN]:
         Jonas.vSpeed += ACELERATION
+    if keys[pygame.K_j] and cooldown == 0:
+        if highJump:
+            highJump = False
+        else:
+            highJump = True
+        cooldown = 1
+    
+    if cooldown >= 1:
+        cooldown += 1
+    if cooldown >= 30:
+        cooldown = 0
+    
+    if highJump:
+        jumpheight = 30
+    else:
+        jumpheight = 15
     
     if Jonas.hSpeed > 0:#Gravidade
         if Jonas.x + Jonas.hSpeed + Jonas.width >= WIDTH:
